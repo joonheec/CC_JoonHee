@@ -1,3 +1,7 @@
+//Joon Hee Choi
+//A Ruined Mondrian
+
+
 void rect1(){
   strokeWeight(5);
   fill(255);
