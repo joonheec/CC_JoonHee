@@ -54,10 +54,12 @@ void draw(){
   
 }
 void keyPressed(){
+  //clears sketch
   drawBackground();
 }
 
 void mousePressed(){
+  //create random sized rectangles
   fill(random(10,255),random(10,255),random(10,255));
   rect(mouseX,mouseY, random(25,300), random(25,300));
 }
