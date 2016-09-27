@@ -2,7 +2,7 @@
 // Mad Circles
 // Mouse over the different quadrants of the image!
 // Drag the mouse to change the alpha value of the circles!
-
+// Click to clear!
 float a = 200;
 float value = 100;
 boolean loop = true; 
@@ -62,5 +62,14 @@ void mouseDragged(){
   a-=5;
   if(a<2){
     a=200;
+  }
+}
+
+void mouseClicked(){
+  for(int i=2000; i>0; i-= 50){
+    if(i%150 == 0){
+      fill(random(10,255),random(10,255),random(10,255),a);
+    }
+    ellipse(width/2,height/2,i,i);
   }
 }
