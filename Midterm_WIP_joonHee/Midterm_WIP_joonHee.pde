@@ -31,6 +31,9 @@
 //Timer timer;
 PImage introScreen;
 PImage secondScene;
+PImage hallwayScene;
+PImage gameOver;
+PImage cakeRoom;
 String state = "intro";
 PFont fontBig;
 PFont fontSmall;
@@ -40,6 +43,9 @@ void setup() {
   background(0);
   introScreen = loadImage("rabbit-hole.jpg");
   secondScene = loadImage("rabbitchase.jpg");
+  hallwayScene = loadImage("hallway.jpg");
+  gameOver = loadImage("game-over.jpg");
+  cakeRoom = loadImage("eat-me.jpg");
   fontBig = createFont("LobsterTwo-Regular.otf", 30);
   fontSmall = createFont("LobsterTwo-Regular.otf", 24);
   //timer = new Timer(10000);
@@ -66,7 +72,7 @@ void draw() {
       if (mouseY >= 190 && mouseY <= 210 && mouseX >= 250 && mouseX <= 550){
         fill(255);
       }
-      text("click to start the game", width/2, 200);
+      text("click here to start the game", width/2, 200);
       break;
     case "rabbitScene":
       println("State: Rabbit Scene");
@@ -78,21 +84,28 @@ void draw() {
       text("D - Follow the rabbit", 525, 260);
       break;  
     case "hallwayScene":
-      background (0);
+      println("Hallway Scene");
+      image(hallwayScene,0,0);
       text("W - Random Room", 550,200);
       text("A - Random Room", 550,260);
       text("S - Random Room", 550,320);
       text("D - Tiny Door", 530,380);
       if(!gardenKey){
         text("E - Pick up Key", 550,700);
+      } else{
+        text("You have the Key", 550,700);
       }
       break;
     case "gameOver1":
-      background(0);
+      println("Game Over Scene");
+      image(gameOver,0,0);
+      background(255,0,0);
       text("Game Over", width/2, height/2);
+      text("Click to Restart", width/2, 500);
       break;
     case "room1":
-      background(0);
+      println("Cake Room");
+      image(cakeRoom,0,0);
       text("Room 1", width/2, height/2);
       break;
      case "room2":
@@ -116,6 +129,9 @@ void mousePressed(){
     if (mouseY >= 190 && mouseY <= 210 && mouseX >= 250 && mouseX <= 550){
         state = "rabbitScene";
       }
+  }
+  if(state == "gameOver1"){
+    state = "intro";
   }
 }
 void keyPressed(){
