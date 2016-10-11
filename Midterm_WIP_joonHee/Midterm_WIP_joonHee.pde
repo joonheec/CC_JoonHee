@@ -34,10 +34,20 @@ PImage secondScene;
 PImage hallwayScene;
 PImage gameOver;
 PImage cakeRoom;
+PImage tooBig;
+PImage potionScene;
+PImage teaParty;
+PImage wakeUp;
 String state = "intro";
 PFont fontBig;
 PFont fontSmall;
 boolean gardenKey = false;
+boolean potion = false;
+boolean cake = false;
+float r=3;
+float b=5;
+float g=2;
+String[] randomRooms = { "room1", "room2", "room3"};
 void setup() {
   size(800,800);
   background(0);
@@ -46,6 +56,10 @@ void setup() {
   hallwayScene = loadImage("hallway.jpg");
   gameOver = loadImage("game-over.jpg");
   cakeRoom = loadImage("eat-me.jpg");
+  teaParty = loadImage("teaparty.jpg");
+  potionScene = loadImage("potion.jpg");
+  tooBig = loadImage("too-big.jpg");
+  wakeUp = loadImage("wake-up.jpg");
   fontBig = createFont("LobsterTwo-Regular.otf", 30);
   fontSmall = createFont("LobsterTwo-Regular.otf", 24);
   //timer = new Timer(10000);
@@ -86,40 +100,74 @@ void draw() {
     case "hallwayScene":
       println("Hallway Scene");
       image(hallwayScene,0,0);
-      text("W - Random Room", 550,200);
-      text("A - Random Room", 550,260);
-      text("S - Random Room", 550,320);
-      text("D - Tiny Door", 530,380);
+      textFont(fontSmall);
+      text("You followed the rabbit down the rabbit hole, and you've ended up in this hallway.",width/2, 130);
+      text("W - Random Room", width/2,300);
+      text("A - Random Room", width/2,360);
+      text("S - Random Room", width/2,420);
+      text("D - Tiny Door", width/2,480);
       if(!gardenKey){
         text("E - Pick up Key", 550,700);
       } else{
         text("You have the Key", 550,700);
       }
       break;
-    case "gameOver1":
+    case "gameOver":
       println("Game Over Scene");
       image(gameOver,0,0);
-      background(255,0,0);
+      fill(0);
       text("Game Over", width/2, height/2);
       text("Click to Restart", width/2, 500);
       break;
     case "room1":
       println("Cake Room");
       image(cakeRoom,0,0);
-      text("Room 1", width/2, height/2);
-      break;
+      text("You stumble into a room with a cake.", width/2, height/2);
+      if(!cake){
+          text("E - To eat the cake", width/2, 500);
+          text("R - Back to the hallway", width/2, 600);
+          break;
+        }
+        else{
+          text("R - Back to the hallway", width/2, 500);
+          break;
+        }
      case "room2":
-      background(0);
-      text("Room 2", width/2, height/2);
+      image(potionScene,0,0);
+      fill(255);
+      text("There's a bottle that says 'Drink Me'", width/2, height/2);
+      if(potion == false){
+        fill(255);
+        text("E - Drink potion",width/2, 500);
+        fill(255);
+      }
+      else{
+        text("R - Back to the hallway", width/2, 500);
+      }
+      
       break;
      case "room3":
-      background(0);
-      text("Room 3", width/2, height/2);
+      image(teaParty,0,0);
+      text("You arrive at the March Hare's House, and are treated to a Mad Tea Party.", width/2, 200);
+      text("The attendants are way too arguementative for your taste.", width/2, 300);
+      text("R - Leave the tea party",width/2,400);
       break;
      case "gardenScene":
-      background(0);
-      text("Garden", width/2, height/2);
+      image(wakeUp,0,0);
+      fill(255);
+      textFont(fontSmall);
+      text("You open the door to the garden only to wake up to the very same garden you were in", width/2, 200);
+      text("Everything turned out to be a dream.",width/2, 300);
+      textFont(fontBig);
+      text("R - Dream again?", width/2, height/2);
       break;
+      
+     case "fatScene": 
+       image(tooBig,0,0);
+       fill(255);
+       text("The potion made you too big to fit through the door!", width/2, 300);
+       text("E - Back to the hallway", width/2, 500);
+       break;
   }
 
 } 
@@ -136,31 +184,63 @@ void mousePressed(){
 }
 void keyPressed(){
   if (state == "rabbitScene" && (key == 'w')){
-    state = "gameOver1";
+    state = "gameOver";
   }
   if (state == "rabbitScene" && (key == 'd')){
     state = "hallwayScene";
   }
   if (state == "hallwayScene" && (key == 'w')){
-    state = "room1";
+    int index = int(random(randomRooms.length));
+    state = randomRooms[index];
   }
   if (state == "hallwayScene" && (key == 'a')){
-    state = "room2";
+    int index = int(random(randomRooms.length));
+    state = randomRooms[index];
   }
   if (state == "hallwayScene" && (key == 's')){
-    state = "room3";
+    int index = int(random(randomRooms.length));
+    state = randomRooms[index];
   }
-  if (state == "hallwayScene" && (key == 'd') && gardenKey == true){
-    state = "gardenScene";
+  if (state == "hallwayScene" && (key == 'd') && (gardenKey == true)){
+    if (cake == true){
+      state = "gardenScene";
+    }
+    else{
+      state = "fatScene";
+    }
+  }
+  if (state == "fatScene" && (key == 'e')){
+    state = "hallwayScene";
   }
   if (state == "hallwayScene" && (key == 'e')){
     state = "key";
   }
-  if (state == "room1" && (key == 'e')){
+  if ((state == "room1") && (key == 'e')){
+    cake = true;
+    potion = false;
+    state = "hallwayScene"; 
+  }
+  if((state == "room1") && (key == 'r')){
+    state = "hallwayScene";
+  }
+  if ((state == "room2") && (key == 'e')){
+    potion = true;
+    cake = false;
+    fill(255);
     state = "hallwayScene";
   }
   if (state == "key" && (key == 'e')){
-    state = "hallwayScene";
     gardenKey = true;
+    state = "hallwayScene";
+  }
+  if (state == "room3" && (key == 'r')){
+    state = "hallwayScene";
+  }
+  if (state == "gardenScene" && (key == 'r')){
+    cake = false;
+    gardenKey = false;
+    potion = false;
+    state = "intro";
+
   }
 }
