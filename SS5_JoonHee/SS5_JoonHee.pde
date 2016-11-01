@@ -2,8 +2,9 @@
 //SS5 - Joon Hee Choi
 // Press 4 twice to restart all tracks, press it once to pause the current track.
 PImage img1;
-PImage img2;
-PImage img3;
+PImage image;
+PImage image2;
+PImage image3;
 
 import ddf.minim.*;
 Minim minim;
@@ -16,9 +17,9 @@ void setup() {
   background(0);
   fill(255);
   minim=new Minim(this);
-  img1=loadImage("boombox.jpg");
-  img2=loadImage("slander.jpg");
-  img3=loadImage("kanye.jpg");
+  image=loadImage("boombox.jpg");
+  image2=loadImage("slander.jpg");
+  image3=loadImage("kanye.jpg");
   player1 = minim.loadFile("boombox.mp3");
   player2 = minim.loadFile("slander.mp3");
   player3 = minim.loadFile("kanye-ookay-remix.mp3");
@@ -27,9 +28,9 @@ void setup() {
 void draw() {
   //landing page
   if (state=="player") {
-    image(img1, 0, 0);
-    image(img2, 0, 500);
-    image(img3, 500, 0);
+    image(image, 0, 0);
+    image(image2, 0, 500);
+    image(image3, 500, 0);
     textAlign(CENTER);
     text("1", 250,250);
     text("2", 250,750);
