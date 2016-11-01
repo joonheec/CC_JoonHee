@@ -1,11 +1,12 @@
 //Music Player
 //SS5 - Joon Hee Choi
+//Press 1-3 to play the song or click the song
 // Press 4 twice to restart all tracks, press it once to pause the current track.
 PImage image;
 PImage image2;
 PImage image3;
 
-import ddf.minim.*;
+import ddf.minim.*;11
 Minim minim;
 AudioPlayer player1;
 AudioPlayer player2;
