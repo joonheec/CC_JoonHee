@@ -62,16 +62,16 @@ void draw() {
   
 }
 void mousePressed() {
-    if (mouseX > 0 && mouseX < 400 && mouseY > 0 && mouseY< 400) {
+    if (mouseX > 0 && mouseX < 500 && mouseY > 0 && mouseY< 500) {
        state="boombox";
     }
-    if (mouseX > 0 && mouseX < 400 && mouseY > 400 && mouseY < 800) {
+    if (mouseX > 0 && mouseX <500 && mouseY > 500 && mouseY < 1000) {
        state="slander";
     }
-    if (mouseX > 400 && mouseX < 800 && mouseY > 0 && mouseY < 800) {
+    if (mouseX > 500 && mouseX < 1000 && mouseY > 0 && mouseY < 1000) {
        state="ookay";
     }
-    if (mouseX > 400 && mouseX < 800 && mouseY > 400 && mouseY < 400) {
+    if (mouseX > 500 && mouseX < 1000 && mouseY > 500 && mouseY < 500) {
        state="pause";
     } 
 }
