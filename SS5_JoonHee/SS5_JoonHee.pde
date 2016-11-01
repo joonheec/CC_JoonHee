@@ -1,5 +1,6 @@
 //Music Player
 //SS5 - Joon Hee Choi
+// Press 4 twice to restart all tracks, press it once to pause the current track.
 PImage img1;
 PImage img2;
 PImage img3;
