@@ -4,7 +4,7 @@ var value = 50;
 var message = "Hello";
 var loop = true;
 function lowerAlpha(){
-  //slowly lowers the alpha value of fill
+  //slowly lowers the alpha value of fill 
   a-=10;
   if(a<20){
       a=200;
