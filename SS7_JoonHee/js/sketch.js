@@ -11,6 +11,7 @@ var state = 'aurora';
 var canvas;
 var button;
 function preload(){
+  //load images and mp3
   song1 = loadSound("../mp3/aurora.mp3");
   song1_image = loadImage("../img/aurora.jpg");
   song2 = loadSound("../mp3/frontlines.mp3");
@@ -27,8 +28,10 @@ function setup() {
   song1.play();
   song2.pause();
   song3.pause();
+  //instantiate a slider
   volumeSlider = createSlider(0,2000,1000);
   volumeSlider.position(460, 560);
+  //create a button 
   button = createButton('>>');
   button.position(700, 560);
   button.mousePressed(nextSong);
@@ -36,15 +39,16 @@ function setup() {
 }
 
 function draw() {
+  //get value from slider 
   speed = volumeSlider.value()/1000;
   speed = constrain(speed,0,2);
+  //set song rate to value from slider
   song1.rate(speed);
   song2.rate(speed);
   song3.rate(speed);
   fill(0,0,0);
-  textAlign(CENTER);
   text("Tempo", 50,520);
-  text("-",0, 520);
+  text("-",10, 520);
   text("+",110, 520);
   console.log(state);
   if (state == 'aurora'){
@@ -87,7 +91,7 @@ function nextSong() {
     
     song3.stop();
     song2.pause();
-    state = 'first';
+    state = 'aurora';
     song1.play();
   }
 }
