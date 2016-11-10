@@ -1,3 +1,5 @@
+//Joon Hee Choi
+//Start of Mixer 
 var song1_image;
 var song1;
 var song2;
