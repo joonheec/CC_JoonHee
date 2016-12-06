@@ -4,7 +4,7 @@ var lowerPeakDetect;
 var midPeakDetect; // mid range peak
 var higherPeakDetect; // higher range peak
 var soundFile;
-var binCount = 512;
+var binCount = 256;
 var particles =  new Array(binCount);
 
 //
@@ -32,7 +32,7 @@ var Particle = function(position) {
   this.position = position;
   this.scale = random(0, 1);
   this.speed = createVector(0, random(0, 10) );
-  this.color = [random(50, 255), 0, random(30,255),random(40,80)];
+  this.color = [random(50, 255), 0, random(30,255),random(40,99)];
 }
 
 var theyExpand = 1;
@@ -75,14 +75,15 @@ function setup() {
   textAlign(CENTER);
   imageMode(CENTER);
   stroke(0);
-  // p5.PeakDetect requires a p5.FFT
   fft = new p5.FFT();
+
   lowerPeakDetect = new p5.PeakDetect(40,2000);
   midPeakDetect = new p5.PeakDetect(2000,4000);
   higherPeakDetect = new p5.PeakDetect(4000,10000);
 
   fft = new p5.FFT(0.8, 1024);
   fft.setInput(soundFile);
+
   for (var i = 0; i < particles.length; i++) {
     var x = map(i, 0, binCount, 0, width * 2);
     var y = random(0, height);
@@ -102,7 +103,7 @@ function draw() {
   var spectrum = fft.analyze(binCount);
 
   //
-  // update peakDetect via FFT post-analysis
+  // update peakDetect via FFT 
   //
   fft.analyze();
   lowerPeakDetect.update(fft);
@@ -110,7 +111,7 @@ function draw() {
   higherPeakDetect.update(fft);
 
   //
-  // prepare size based on peak detection
+  // set sizes based on peak detect
   //
   if (lowerPeakDetect.isDetected){
       w1 = maximumWidth1;
@@ -160,20 +161,22 @@ function draw() {
   for (var i = 0; i < binCount; i++) {
     var thisLevel = map(spectrum[i], 0, 255, 0, 1);
 
-    // update values based on amplitude at this part of the frequency spectrum
+    // update values based on amplitude
     particles[i].update( thisLevel );
 
-    // draw the particle
+    // draw the particle in index = i
     particles[i].draw();
 
-    // update x position (in case we change the bin count while live coding)
+    //update x coordinate of particle based on binCount
     particles[i].position.x = map(i, 0, binCount, 0, width * 2);
 
   }
 
 
 }
-
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
 // toggle play/stop when canvas is clicked
 function mouseClicked() {
   if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
