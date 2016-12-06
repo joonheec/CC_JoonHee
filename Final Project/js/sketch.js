@@ -4,7 +4,7 @@ var lowerPeakDetect;
 var midPeakDetect; // mid range peak
 var higherPeakDetect; // higher range peak
 var soundFile;
-var binCount = 1024;
+var binCount = 512;
 var particles =  new Array(binCount);
 
 //
@@ -27,12 +27,12 @@ var imagePath2 = "../img/circle.png";
 var imagePath3 = "../img/circle.png";
 
 var imageCache = {};
-
+//Particle Class
 var Particle = function(position) {
   this.position = position;
   this.scale = random(0, 1);
   this.speed = createVector(0, random(0, 10) );
-  this.color = [random(50, 255), 0, random(30,255)];
+  this.color = [random(50, 255), 0, random(30,255),random(40,80)];
 }
 
 var theyExpand = 1;
@@ -48,11 +48,13 @@ Particle.prototype.update = function(someLevel) {
 }
 
 Particle.prototype.draw = function() {
-  fill(this.color);
-  ellipse(
-    this.position.x, this.position.y,
-    this.diameter, this.diameter
-  );
+    noStroke();
+    fill(this.color);
+    ellipse(
+      this.position.x, this.position.y,
+      this.diameter, this.diameter
+    );
+
 }
 
 function preload(){
@@ -71,6 +73,7 @@ function setup() {
   noStroke();
   fill(255);
   textAlign(CENTER);
+  imageMode(CENTER);
   stroke(0);
   // p5.PeakDetect requires a p5.FFT
   fft = new p5.FFT();
@@ -143,15 +146,17 @@ function draw() {
   }
 
   //
-  // update the character images width, height, x, y based on peak detection
+  // update images width, height, x, y based on peak detection
   //
   image(imageCache[imagePath1],windowWidth/2, windowHeight/2+lowerPeakDetect.energy *100,w1,w1);
+  image(imageCache[imagePath2], width/2 - (imageCache[imagePath2].width/2)-200, (height/2)  + midPeakDetect.energy *100, w2, w2);
+  image(imageCache[imagePath3], width/2 - (imageCache[imagePath3].width/2) + maximumWidth3+200, (height/2 )  + higherPeakDetect.energy *100, w3, w3);
+
   // image(imageCache[imagePath1], width/2 - (imageCache[imagePath1].width/2) - maximumWidth1, (height/2 - (imageCache[imagePath1].height/2)) + lowerPeakDetect.energy *100, w1, w1);
 
   // image(imageCache[imagePath2], width/2 - (imageCache[imagePath2].width/2), (height/2 - (imageCache[imagePath2].height/2))  + midPeakDetect.energy *100, w2, w2);
 
   // image(imageCache[imagePath3], width/2 - (imageCache[imagePath3].width/2) + maximumWidth3, (height/2 - (imageCache[imagePath3].height/2))  + higherPeakDetect.energy *100, w3, w3);
-
   for (var i = 0; i < binCount; i++) {
     var thisLevel = map(spectrum[i], 0, 255, 0, 1);
 
@@ -163,7 +168,10 @@ function draw() {
 
     // update x position (in case we change the bin count while live coding)
     particles[i].position.x = map(i, 0, binCount, 0, width * 2);
+
   }
+
+
 }
 
 // toggle play/stop when canvas is clicked
@@ -171,8 +179,10 @@ function mouseClicked() {
   if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
     if (soundFile.isPlaying() ) {
       soundFile.stop();
+      binCount = 32;
     } else {
       soundFile.loop();
+      binCount = 512;
     }
   }
 }
