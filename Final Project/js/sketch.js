@@ -1,4 +1,6 @@
-
+//Joon Hee Choi
+// Music Visualizer
+// Final Project
 var cnv; //canvas
 var fft; //Fast Fourier Transform
 var lowerPeakDetect; 
@@ -194,7 +196,7 @@ function draw() {
   background(0);
   fill(255);
   text('Press Spacebar to play/pause', width/10, height/10);
-  text('drag and drop songs to load into visualizer',width/10+15, height/10+20); 
+  text('Drag and drop songs to load into visualizer',width/10+15, height/10+20); 
   if(menuToggle){
     text("Tempo", width/2-40,80);
     text("Amplitude", width/2+160,80); 
@@ -202,7 +204,7 @@ function draw() {
     ampSlider.position(windowWidth/2+100, 50);
   }
   else{
-    text('Press Enter to turn on/off the menu', 100,300);
+    text('Press Enter to turn on/off the menu', width/10,height/10+30);
     tempoSlider.position(9000, 50);
     ampSlider.position(9000, 50);
   }
