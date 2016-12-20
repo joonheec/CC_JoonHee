@@ -1,3 +1,4 @@
+
 var cnv; //canvas
 var fft; //Fast Fourier Transform
 var lowerPeakDetect; 
@@ -8,11 +9,14 @@ var binCount = 512;
 var particles =  new Array(binCount);
 var tempoSlider;
 var tempoValue;
+var lpfSlider;
 var ampSlider;
 var ampValue;
 var amp;
 var speed;
+var lpf;
 var randomInt;
+var menuToggle = true;
 
 //
 // variables to manage the three character images
@@ -21,10 +25,12 @@ var randomInt;
 var w1 = null;
 var w2 = null;
 var w3 = null;
-
-var minimumWidth1 = 400;
-var minimumWidth2 = 300;
-var minimumWidth3 = 250;
+var randomColor1;
+var randomColor2;
+var randomColor3;
+var minimumWidth1 = 150;
+var minimumWidth2 = 150;
+var minimumWidth3 = 150;
 var maximumWidth1 = minimumWidth1 + (minimumWidth1 * .25);
 var maximumWidth2 = minimumWidth2 + (minimumWidth1 * .25);
 var maximumWidth3 = minimumWidth3 + (minimumWidth1 * .55);
@@ -43,10 +49,25 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 var Particle = function(position) {
+  randomColor1 = [random(30,40), random(30,180), 255,random(20,90)];
+  randomColor2 = [random(40,120), 255, random(180,255),random(70,90)];
+  randomColor3 = [255, random(150,180), random(40,170),random(50,90)];  
   this.position = position;
   this.scale = random(0, 1);
   this.speed = createVector(0, random(0, 7) );
   this.color = [255, random(30,180), random(140,255),random(70,90)];
+  if(randomInt == 0){
+    this.color = randomColor1;
+  }
+  else if(randomInt == 1){
+    this.color = randomColor2;
+  }
+  else if(randomInt == 2){
+    this.color = randomColor3;
+  }
+  else{
+    this.color = [255, random(30,180), random(140,255),random(70,90)];
+  }
 
 }
 
@@ -60,31 +81,43 @@ Particle.prototype.update = function(someLevel) {
   }
   this.diameter = map(someLevel, 0, 1, 0, 75) * this.scale * theyExpand;
   if (lowerPeakDetect.isDetected){
-    this.diameter *= 1.03;
-  }
-  if (midPeakDetect.isDetected){
-    this.diameter *= 1.05;
-  }
-  if (higherPeakDetect.isDetected){
     this.diameter *= 1.1;
   }
+  if (midPeakDetect.isDetected){
+    this.diameter *= 1.3;
+  }
+  if (higherPeakDetect.isDetected){
+    this.diameter *= 1.7;
+  }
+  // if(randomInt == 0){
+  //   this.color = randomColor1;
+  // }
+  // else if(randomInt == 1){
+  //   this.color = randomColor2;
+  // }
+  // else if(randomInt == 2){
+  //   this.color = randomColor3;
+  // }
+  // else{
+  //   this.color = [255, random(30,180), random(140,255),random(70,90)];
+  // }
 
 }
 
 Particle.prototype.draw = function() {
     noStroke();
-    // if(randomInt == 0){
-    //   this.color = [random(30,40), random(30,180), 255,random(20,90)];
-    // }
-    // else if(randomInt == 1){
-    //   this.color = [random(40,120), 255, random(180,255),random(70,90)];
-    // }
-    // else if(randomInt == 2){
-    //   this.color = [255, random(150,180), random(40,170),random(50,90)];
-    // }
-    // else{
-    //   this.color = [255, random(30,180), random(140,255),random(70,90)];
-    // }
+    if(randomInt == 0){
+      this.color = randomColor1;
+    }
+    else if(randomInt == 1){
+      this.color = randomColor2;
+    }
+    else if(randomInt == 2){
+      this.color = randomColor3;
+    }
+    else{
+      this.color = [255, random(30,180), random(140,255),random(70,90)];
+    }
     fill(this.color);
     ellipse(
       this.position.x, this.position.y,
@@ -99,7 +132,7 @@ function preload(){
   imageCache[imagePath2] = loadImage(imagePath2);
   imageCache[imagePath3] = loadImage(imagePath3);
 
-  soundFile = loadSound("../mp3/mercy-threatz.mp3");
+  soundFile = loadSound("../mp3/Lookas - Apollo.mp3");
 }
 
 function setup() {
@@ -112,19 +145,23 @@ function setup() {
   fill(255);
   textAlign(CENTER);
   imageMode(CENTER);
-  stroke(0);
-
+  // randomColor1 = [random(30,40), random(30,180), 255,random(20,90)];
+  // randomColor2 = [random(40,120), 255, random(180,255),random(70,90)];
+  // randomColor3 = [255, random(150,180), random(40,170),random(50,90)];
   //instantiate a slider
   tempoSlider = createSlider(0,2000,1000);
-  tempoSlider.position(windowWidth/2, 50);
-  ampSlider = createSlider(0,1000,500);
-  ampSlider.position(windowWidth/2, 200);
-
+  ampSlider = createSlider(0,2000,1000);
+  // lpfSlider = createSlider(20,10000,5000);
+  // lpf = lpfSlider.value();
   fft = new p5.FFT();
 
   lowerPeakDetect = new p5.PeakDetect(40,2000);
   midPeakDetect = new p5.PeakDetect(2000,4000);
   higherPeakDetect = new p5.PeakDetect(4000,10000);
+
+  // lowPassFilter = new p5.LowPass();
+  // soundFile.connect(lowPassFilter);
+  // console.log(lowPassFilter);
 
   fft = new p5.FFT(0.99, 1024);
   fft.setInput(soundFile);
@@ -134,18 +171,18 @@ function setup() {
     var y = random(0, height);
     var position = createVector(x, y);
     particles[i] = new Particle(position);
-    if(randomInt == 0){
-      particles[i].color = [random(30,40), random(30,180), 255,random(20,90)];
-    }
-    else if(randomInt == 1){
-      particles[i].color = [random(40,120), 255, random(180,255),random(70,90)];
-    }
-    else if(randomInt == 2){
-      particles[i].color = [255, random(150,180), random(40,170),random(50,90)];
-    }
-    else{
-      particles[i].color = [255, random(30,180), random(140,255),random(70,90)];
-    }
+    // if(randomInt == 0){
+    //   particles[i].color = [random(30,40), random(30,180), 255,random(20,90)];
+    // }
+    // else if(randomInt == 1){
+    //   particles[i].color = [random(40,120), 255, random(180,255),random(70,90)];
+    // }
+    // else if(randomInt == 2){
+    //   particles[i].color = [255, random(150,180), random(40,170),random(50,90)];
+    // }
+    // else{
+    //   particles[i].color = [255, random(30,180), random(140,255),random(70,90)];
+    // }
   }
 }
 
@@ -156,10 +193,23 @@ function draw() {
   //
   background(0);
   fill(255);
-  text('click to play/pause', width/10, height/10);
-  text('drag and drop songs to load into visualizer',width/10,height/10+20);  
+  text('Press Spacebar to play/pause', width/10, height/10);
+  text('drag and drop songs to load into visualizer',width/10+15, height/10+20); 
+  if(menuToggle){
+    text("Tempo", width/2-40,80);
+    text("Amplitude", width/2+160,80); 
+    tempoSlider.position(windowWidth/2-100, 50);
+    ampSlider.position(windowWidth/2+100, 50);
+  }
+  else{
+    text('Press Enter to turn on/off the menu', 100,300);
+    tempoSlider.position(9000, 50);
+    ampSlider.position(9000, 50);
+  }
+  // lpfSlider.position(windowWidth/2-100,100);
   var spectrum = fft.analyze(binCount);
-
+  //  lpf = lpfSlider.value();
+  // lowPassFilter.freq(lpf);
   //
   // update peakDetect via FFT 
   //
@@ -208,7 +258,7 @@ function draw() {
   // update images width, height, x, y based on peak detection
   //
   image(imageCache[imagePath1],windowWidth/2, (height/2)+lowerPeakDetect.energy *100,w1,w1);
-  image(imageCache[imagePath2], width/2 - (imageCache[imagePath2].width/2)-200, (height/2)  + midPeakDetect.energy *100, w2, w2);
+  image(imageCache[imagePath2], width/2 - (imageCache[imagePath2].width/2)-150, (height/2)  + midPeakDetect.energy *100, w2, w2);
   image(imageCache[imagePath3], width/2 - (imageCache[imagePath3].width/2) + maximumWidth3+200, (height/2 )  + higherPeakDetect.energy *100, w3, w3);
 
   for (var i = 0; i < binCount; i++) {
@@ -226,7 +276,8 @@ function draw() {
   speed = tempoSlider.value()/1000;
   speed = constrain(speed,0,2);
   amp = ampSlider.value()/1000;
-  amp = constrain(amp,0,1);
+  amp = constrain(amp,0,2);
+  
   //set rate of song
   soundFile.rate(speed);
   soundFile.setVolume(amp);
@@ -245,16 +296,27 @@ function newFile(file) {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
+
 // toggle play/stop when canvas is clicked
-function mouseClicked() {
-  if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-    randomInt = getRandomInt(0,3);
+function keyPressed(){
+  if(keyCode == 32){
     if (soundFile.isPlaying() ) {
       soundFile.stop();
       binCount = 32;
     } else {
       soundFile.loop();
+      randomInt = getRandomInt(0,3);
       binCount = 512;
+    }
+  }
+  if(keyCode == ENTER){
+    if(menuToggle){
+      menuToggle = false;
+
+    }
+    else if(!menuToggle){
+      menuToggle = true;
+
     }
   }
 }
